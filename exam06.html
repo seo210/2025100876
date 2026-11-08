@@ -5,13 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
-<script src=>
+<script src="https://code.jquery.com/jquery-4.0.0.module.min.js" integrity="sha256-d4LwM9D6pTkixVQVP66nz3BYd8ri7Uriz7C3X4qBAVE=" crossorigin="anonymous"></script>
     $(documet).ready(function(){
         $('button').click(function(){
             $('h1').css('color','red');
             $('p').css('backgroundcolor','yellow');
             $('img').attr('src','https://placehold.co/300x300');
-        )
+            $('#t1').text('<a href="https://www.syu.ac.kr">text()</a>');
+            $('#t2').html('<a href="https://www.syu.ac.kr">html()</a>');
+            $('#t1').toggleClass('c1'
+        );
         });
     });
 </script>
