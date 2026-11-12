@@ -9,6 +9,26 @@
     h1{ text-align: center;}
     .disp{width:205px;}
 </style>
+<script>
+  $(document).ready(function(){
+      $('.num').click(function(){
+          let cur = $('#disp2').val();
+          let n = $(this).val();
+          $('#disp2').val(cur+n);
+      });
+      $('.op').click(function(){
+          let cur = $('#disp2').val();
+          let opt = $(this).val();
+          if( opt != "=" ) {
+              $('#disp2').val(cur+opt);
+          }
+          else {
+              $('#disp1').val(cur);
+              //$('#disp2').val(eval(cur));
+          }
+      });
+  });
+</script>
 <body>
     <h1> 계산기</h1>
     <div id="calc">
