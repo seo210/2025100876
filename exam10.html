@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>나만의 모던 웹 계산기</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+        }
+        body {
+            background-color: #121212;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        #calc {
+            background-color: #1e1e24;
+            padding: 24px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            width: 320px;
+        }
+        h2 {
+            color: #ffffff;
+            text-align: center;
+            margin-top: 0;
+            margin-bottom: 16px;
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        .display-box {
+            background-color: #2b2b36;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+        .disp {
+            width: 100%;
+            border: none;
+            background: transparent;
+            text-align: right;
+            outline: none;
+        }
+        #disp1 {
+            color: #8e8e9e;
+            font-size: 14px;
+            height: 20px;
+            margin-bottom: 4px;
+        }
+        #disp2 {
+            color: #ffffff;
+            font-size: 28px;
+            font-weight: bold;
+            height: 36px;
+        }
+        .btn-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+        input[type="button"] {
+            height: 55px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        input[type="button"]:active {
+            transform: scale(0.95);
+        }
+        .num {
+            background-color: #32323e;
+            color: #ffffff;
+        }
+        .num:hover {
+            background-color: #3e3e4d;
+        }
+        .op {
+            background-color: #ff9f0a;
+            color: #ffffff;
+        }
+        .op:hover {
+            background-color: #ffb340;
+        }
+        .func {
+            background-color: #4a4a58;
+            color: #ff6b6b;
+        }
+        .func:hover {
+            background-color: #5a5a6b;
+        }
+        .equal {
+            background-color: #30d158;
+            color: #ffffff;
+        }
+        .equal:hover {
+            background-color: #4cd964;
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+             $('.num').click(function () {
+                let cur = $('#disp2').val();
+                let n = $(this).val();
+                if (cur === 'Error') cur = '';
+                $('#disp2').val(cur + n);
+            });
+             $('.op, .equal').click(function () {
+                let cur = $('#disp2').val();
+                let opt = $(this).val();
+                if (cur === '' || cur === 'Error') return;
+
+                if (opt !== '=') {
+                    if (['+', '-', '*', '/', '%'].includes(cur.slice(-1))) {
+                        $('#disp2').val(cur.slice(0, -1) + opt);
+                    } else {
+                        $('#disp2').val(cur + opt);
+                    }
+                } else {
+                    calculateResult(cur);
+                }
+            });
+             $('.func').click(function () {
+                let action = $(this).val();
+                if (action === 'AC') {
+                    $('#disp1').val('');
+                    $('#disp2').val('');
+                } else if (action === '←') {
+                    let cur = $('#disp2').val();
+                    if (cur === 'Error') {
+                        $('#disp2').val('');
+                    } else {
+                        $('#disp2').val(cur.slice(0, -1));
+                    }
+                }
+            });
+              function calculateResult(expression) {
+                try {
+                    $('#disp1').val(expression + ' =');
+                    let result = Function('"use strict"; return (' + expression + ')')();
+                    if (!isFinite(result) || isNaN(result)) {
+                        $('#disp2').val('Error');
+                    } else {
+                        $('#disp2').val(Number(result.toFixed(8)));
+                    }
+                } catch (e) {
+                    $('#disp2').val('Error');
+                }
+            }
+            $(document).keydown(function (e) {
+                const key = e.key;
+                if ((key >= '0' && key <= '9') || key === '.') {
+                    $(`input[value="${key}"]`).click();
+                } else if (['+', '-', '*', '/', '%'].includes(key)) {
+                    $(`input[value="${key}"]`).click();
+                } else if (key === 'Enter' || key === '=') {
+                    e.preventDefault();
+                    $('input[value="="]').click();
+                } else if (key === 'Backspace') {
+                    $('input[value="←"]').click();
+                } else if (key === 'Escape') {
+                    $('input[value="AC"]').click();
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <div id="calc">
+        <h2>MY CALCULATOR</h2>
+        <div class="display-box">
+            <input type="text" class="disp" id="disp1" readonly>
+            <input type="text" class="disp" id="disp2" placeholder="0" readonly>
+        </div>
+        <div class="btn-grid">
+            <input type="button" class="func" value="AC">
+            <input type="button" class="func" value="←">
+            <input type="button" class="op" value="%">
+            <input type="button" class="op" value="/">
+
+            <input type="button" class="num" value="7">
+            <input type="button" class="num" value="8">
+            <input type="button" class="num" value="9">
+            <input type="button" class="op" value="*">
+
+            <input type="button" class="num" value="4">
+            <input type="button" class="num" value="5">
+            <input type="button" class="num" value="6">
+            <input type="button" class="op" value="-">
+
+            <input type="button" class="num" value="1">
+            <input type="button" class="num" value="2">
+            <input type="button" class="num" value="3">
+            <input type="button" class="op" value="+">
+
+            <input type="button" class="num" value="0" style="grid-column: span 2;">
+            <input type="button" class="num" value=".">
+            <input type="button" class="equal" value="=">
+        </div>
+    </div>
+</body>
+</html>
